@@ -1,0 +1,11 @@
+@import "../vars";
+
+nav {
+  width: 100%;
+  background-color: $bgBlack;
+  display: flex;
+
+  ul > li > a {
+    color: $white;
+  }
+}
