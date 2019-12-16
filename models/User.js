@@ -15,7 +15,6 @@ const User = function(data) {
 }
 
 User.prototype.errors = function(error) {
-
   switch (error) {
     case 'username':
       this.errorList.push('You must have a valid username without special characters.');
@@ -56,6 +55,7 @@ User.prototype.login = function() {
   return new Promise((resolve, reject) => {
     this.sanitize();
     usersCollection
+      .db()
       .collection('golfers')
       .findOne(
         { username: this.data.username}
@@ -94,8 +94,8 @@ User.prototype.register = function() {
 
   if (!this.errorList.length) {
     this.data.password = hashPassword(this.data.password)
-    console.log(this.data.password);
     usersCollection
+      .db()
       .collection('golfers')
       .insertOne(this.data)
   }

@@ -5,6 +5,15 @@ nav {
   background-color: $bgBlack;
   display: flex;
 
+  ul,
+  form {
+    flex: 1;
+  }
+  
+  label {
+    color: $white;
+  }
+
   ul > li > a {
     color: $white;
   }

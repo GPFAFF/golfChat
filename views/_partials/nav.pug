@@ -11,4 +11,7 @@ nav
     li
       a(href="/") ABC
 
-  include login.pug
+  if isLoggedIn
+    include logout.pug
+  else
+    include login.pug
