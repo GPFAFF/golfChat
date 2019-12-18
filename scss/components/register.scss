@@ -6,7 +6,7 @@ form {
   display: flex;
   flex-direction: column;
 
-  > input {
+  > label > input {
     padding: 20px;
     border: 0;
     border-radius: 4px;

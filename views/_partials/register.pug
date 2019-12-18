@@ -1,20 +1,22 @@
 form(action='/register' method="POST")
+  each error in registerErrors
+    p= error
   label(for="username") Username
-  input(
-    type="text" 
-    id="username" 
-    name="username"
-  )
+    input(
+      type="text" 
+      id="username" 
+      name="username"
+    )
   label(for="email") Email
-  input(
-    type="text" 
-    id="email" 
-    name="email"
-  )
+    input(
+      type="text" 
+      id="email" 
+      name="email"
+    )
   label(for="password") Password
-  input(
-    type="text" 
-    id="password" 
-    name="password"
-  )
+    input(
+      type="password" 
+      id="password" 
+      name="password"
+    )
   button(type="submit") Register User

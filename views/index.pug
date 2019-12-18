@@ -11,4 +11,7 @@ include /_partials/nav.pug
 main
   h1 Golf Chats
 
+  each error in errors
+    p= error
+
   include /_partials/register.pug

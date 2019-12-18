@@ -31,6 +31,12 @@ User.prototype.errors = function(error) {
     case 'passwordLength':
       this.errorList.push('You must have a password between 6 and 18 characters.');
       break;
+    case 'usernameTaken':
+      this.errorList.push('That username is taken.');
+      break;
+    case 'usernameTaken':
+      this.errorList.push('That email is taken.');
+      break;
     default:
       this.success.push('Thanks for signing up');
    return this.errorList || this.success;
@@ -51,10 +57,10 @@ User.prototype.sanitize = function() {
   }
 }
 
-User.prototype.login = function() {
-  return new Promise((resolve, reject) => {
-    this.sanitize();
-    usersCollection
+User.prototype.login = async function() {
+  try {
+    await this.sanitize();
+    await usersCollection
       .db()
       .collection('golfers')
       .findOne(
@@ -64,41 +70,74 @@ User.prototype.login = function() {
         if (checkUser && isPasswordValid(this.data.password, checkUser.password)) {
           resolve('Congrats here')
         } else {
-          reject('errrrr')
+          reject('Invalid Username or Password.')
         }
       })
-      .catch(() => {
-        reject("Please try again.")
-      })
-  })
+  } catch (error) {
+      console.log('error')
+  }
 }
 
-User.prototype.validate = function() {
+User.prototype.validate = async function() {
+  try {
     const { username, email, password } = this.data;
-
     if (!isAlphaNumeric(username))
-      this.errors('username');
+    this.errors('username');
     if (username.length < 3)
       this.errors('usernameLength')
     if (!isEmail(email))
       this.errors('email');
     if (!password) 
       this.errors('password');
-    if (password.length < 6 && password.length < 18) { this.errors('passwordLength');
+    if (password.length < 6 && password.length < 18) this.errors('passwordLength');
+
+    // only if username is valid
+    if (isAlphaNumeric(username) && username.length > 3 && username.length < 20) {
+      const usernameExists = await 
+        usersCollection
+          .db()
+          .collection('golfers')
+          .findOne({
+            username,
+          });
+        console.log(usernameExists);
+        this.errors('usernameTaken')
+    }
+  
+    if (isEmail(email)) {
+      const emailExists = await 
+        usersCollection
+          .db()
+          .collection('golfers')
+          .findOne({
+            email,
+          });
+      console.log(emailExists);
+
+      if (emailExists) {
+        this.errors('emailTaken')
+      }
+    }
+  } catch(error) {
+    console.log(error)
   }
 }
 
-User.prototype.register = function() { 
-  this.sanitize(this.data);
-  this.validate();
-
-  if (!this.errorList.length) {
-    this.data.password = hashPassword(this.data.password)
-    usersCollection
-      .db()
-      .collection('golfers')
-      .insertOne(this.data)
-  }
+User.prototype.register = async function() {
+  try {
+    await this.sanitize();
+    await this.validate();
+    
+    if (!this.errorList.length) {
+      this.data.password = hashPassword(this.data.password)
+      await usersCollection
+        .db()
+        .collection('golfers')
+        .insertOne(this.data)
+    }
+  } catch (errors) {
+    console.log(errors);
+    }
 };
 
 module.exports = User;

@@ -3,6 +3,7 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
+const flash = require('connect-flash');
 const app = express();
 
 const router = require('./router');
@@ -21,6 +22,7 @@ const sessionOptions = session({
 })
 
 app.use(sessionOptions);
+app.use(flash())
 
 app.set('views', 'views');
 app.set('view engine', 'pug');
