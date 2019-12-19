@@ -9,9 +9,15 @@ head
 
 include /_partials/nav.pug
 main
-  h1 Golf Chats
+  section
+    h1 Golf Chats
 
-  each error in errors
-    p= error
+    p Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam sequi labore possimus similique. Odio provident inventore ipsum, maxime quod, sed placeat, voluptas laudantium nam distinctio sequi libero laboriosam? Et, dignissimos.
 
-  include /_partials/register.pug
+    p Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam sequi labore possimus similique. Odio provident inventore ipsum, maxime quod, sed placeat, voluptas laudantium nam distinctio sequi libero laboriosam? Et, dignissimos.
+
+  section
+    each error in errors
+      p.error= error
+
+    include /_partials/register.pug

@@ -1,6 +1,6 @@
 form(action='/register' method="POST")
   each error in registerErrors
-    p= error
+    p.error= error
   label(for="username") Username
     input(
       type="text" 

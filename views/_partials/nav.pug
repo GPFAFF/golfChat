@@ -11,7 +11,9 @@ nav
     li
       a(href="/") ABC
 
+
   if isLoggedIn
+    include avatar.pug
     include logout.pug
   else
     include login.pug

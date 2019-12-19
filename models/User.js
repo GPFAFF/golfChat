@@ -1,3 +1,5 @@
+const md5 = require('md5');
+const usersCollection = require('../db');
 const { 
   isEmail, 
   isAlphaNumeric, 
@@ -6,12 +8,9 @@ const {
   isPasswordValid,
 } = require('../helpers/utils');
 
-const usersCollection = require('../db');
-
 const User = function(data) {
   this.data = data;
   this.errorList = [];
-  this.success = [];
 }
 
 User.prototype.errors = function(error) {
@@ -34,7 +33,7 @@ User.prototype.errors = function(error) {
     case 'usernameTaken':
       this.errorList.push('That username is taken.');
       break;
-    case 'usernameTaken':
+    case 'emailTaken':
       this.errorList.push('That email is taken.');
       break;
     default:
@@ -57,25 +56,27 @@ User.prototype.sanitize = function() {
   }
 }
 
-User.prototype.login = async function() {
-  try {
-    await this.sanitize();
-    await usersCollection
+User.prototype.login = function () {
+  return new Promise((resolve, reject) => {
+    this.sanitize();
+
+    return usersCollection
       .db()
       .collection('golfers')
       .findOne(
-        { username: this.data.username}
+        { username: this.data.username }
       )
       .then((checkUser) => {
         if (checkUser && isPasswordValid(this.data.password, checkUser.password)) {
-          resolve('Congrats here')
+          this.data = checkUser;
+          this.getAvatar();
+          resolve('success');
         } else {
           reject('Invalid Username or Password.')
         }
       })
-  } catch (error) {
-      console.log('error')
-  }
+      .catch(error => console.error(error))
+  })
 }
 
 User.prototype.validate = async function() {
@@ -91,7 +92,6 @@ User.prototype.validate = async function() {
       this.errors('password');
     if (password.length < 6 && password.length < 18) this.errors('passwordLength');
 
-    // only if username is valid
     if (isAlphaNumeric(username) && username.length > 3 && username.length < 20) {
       const usernameExists = await 
         usersCollection
@@ -100,8 +100,7 @@ User.prototype.validate = async function() {
           .findOne({
             username,
           });
-        console.log(usernameExists);
-        this.errors('usernameTaken')
+        if (usernameExists)this.errors('usernameTaken');
     }
   
     if (isEmail(email)) {
@@ -112,14 +111,11 @@ User.prototype.validate = async function() {
           .findOne({
             email,
           });
-      console.log(emailExists);
 
-      if (emailExists) {
-        this.errors('emailTaken')
-      }
+      if (emailExists) this.errors('emailTaken');
     }
-  } catch(error) {
-    console.log(error)
+  } catch (error) {
+    console.error('error', error)
   }
 }
 
@@ -130,14 +126,19 @@ User.prototype.register = async function() {
     
     if (!this.errorList.length) {
       this.data.password = hashPassword(this.data.password)
-      await usersCollection
+      usersCollection
         .db()
         .collection('golfers')
         .insertOne(this.data)
+        this.getAvatar()
     }
   } catch (errors) {
-    console.log(errors);
-    }
+    console.error('error', error)
+  }
 };
+
+User.prototype.getAvatar = function() {
+  this.avatar = `https://gravatar.com/avatar/${md5(this.data.email)}?s=128`
+}
 
 module.exports = User;

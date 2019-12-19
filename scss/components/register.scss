@@ -2,17 +2,6 @@
 @import '../colors';
 
 form {
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-
-  > label > input {
-    padding: 20px;
-    border: 0;
-    border-radius: 4px;
-    margin: 10px 0;
-  }
-
   > button {
     background-color: $green;
     padding: 20px 40px;

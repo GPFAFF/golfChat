@@ -1,3 +1,5 @@
+@import './vars';
+
 html {
   background-color: $bgGrey;
   box-sizing: border-box;
@@ -5,6 +7,55 @@ html {
 
 body {
   margin: 0;
+}
+
+.error {
+  background-color: pink;
+  color: #a9211e;
+  font-weight: bold;
+  padding: 20px;
+  border: 2px solid #a9211e;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.avatar {
+  height: 60px;
+  width: 60px;
+  padding: 23px;
+}
+
+main {
+  padding: 40px;
+
+  @media (min-width: $tablet) {
+    display: flex;
+
+    > section {
+      flex: 1;
+      padding: 30px;
+
+      > h1 {
+        margin-top: 0;
+      }
+    }
+  }
+}
+
+form {
+  padding: 20px 0;
+
+  > label {
+    display: flex;
+    flex-direction: column;
+  }
+
+  > label > input {
+    padding: 20px;
+    border: 0;
+    border-radius: 4px;
+    margin: 10px 0;
+  }
 }
 
 ul {
